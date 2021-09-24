@@ -1,7 +1,14 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import type { AppProps } from "next/app";
+import { RecoilRoot } from "recoil";
+import DebugObserver from "../components/DebugObserver";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <RecoilRoot>
+      <DebugObserver />
+      <Component {...pageProps} />
+    </RecoilRoot>
+  );
 }
-export default MyApp
+
+export default MyApp;
