@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import axios from "axios";
 import styled from "styled-components";
 import SmallQuote from "../../components/SmallQuote";
 import LoadingDots from "../../components/LoadingDots";
+import { useFetchAnimeQuotes } from "../hooks/useFetchAnimeQuotes";
 
 interface Quote {
   quote: string;
@@ -16,28 +15,8 @@ const Animepage = () => {
   const {
     query: { animeTitle },
   } = useRouter();
-  const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (animeTitle) {
-      setLoading(true);
-      const fetchAnimeQuotes = async () => {
-        try {
-          const res = await axios.get(
-            `https://animechan.vercel.app/api/quotes/anime?title=${animeTitle}`
-          );
-          setQuotes(res?.data);
-          setLoading(false);
-        } catch (error) {
-          console.log(error);
-          setLoading(false);
-        }
-      };
-      fetchAnimeQuotes();
-    }
-  }, [animeTitle]);
-
+  const { data: quotes, loading } = useFetchAnimeQuotes(animeTitle as string);
   return (
     <StyledAnimePage>
       <h2>Quotes from {animeTitle}</h2>
@@ -46,7 +25,7 @@ const Animepage = () => {
         {loading ? (
           <LoadingDots />
         ) : quotes?.length ? (
-          quotes?.map((quote, index) => (
+          quotes?.map((quote: Quote, index: number) => (
             <div key={quote?.quote + index} className="anime">
               <SmallQuote
                 anime={quote?.anime}
